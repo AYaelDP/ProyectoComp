@@ -73,6 +73,12 @@ public class Scanner {
                     } else if (c == ';') {
                         Token t = new Token(TipoToken.SEMICOLON, lexema);
                         tokens.add(t);
+                    } else if (c == '['){
+                        System.out.println("Error: caracter '[' no valido");
+                        System.exit(1);
+                    } else if (c == ']'){
+                        System.out.println("Error: caracter ']' no valido");
+                        System.exit(1);
                     }
                     break;
 
