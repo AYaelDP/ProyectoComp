@@ -51,21 +51,19 @@ public class Scanner {
                         lexema += c;
                     }
                     break;
-                case 24: // Estado para construir una cadena de texto               
-                 if (Character.isJavaIdentifierPart(c)) {
-                    estado = 24;
-                    lexema += c;
-                 } else if (c == '"') {
-                    lexema += c;
-                    Token t = new Token(TipoToken.STRING, lexema, lexema.replace('"', ' ').trim());
-                    tokens.add(t);
-                    estado = 0;
-                    lexema = "";
-                 } else {
-                   System.out.println("Error");
-                 }
-                    break;
-                case 26: // Diagrama 5
+                 case 24: // Estado para construir una cadena de texto
+                    if (c == '"') {
+                        lexema += c;
+                        Token t = new Token(TipoToken.STRING, lexema, lexema.replace('"', ' ').trim());
+                        tokens.add(t);
+                        estado = 0;
+                        lexema = "";
+                    }else if (Character.isJavaIdentifierPart(c) || c == ' ') {
+                        estado = 24;
+                        lexema += c;
+                        } 
+                        break;
+                 case 26: // Diagrama 5
                     if (c == '*') {
                         estado = 27;
                         lexema += c;
@@ -81,18 +79,18 @@ public class Scanner {
                         i--;
                     }
 
-                    break;
-                case 27: // Diagrama 5
-                    if (c == '*') {
+                        break;
+                    case 27: // Diagrama 5
+                      if (c == '*') {
                         estado = 28;
                         lexema += c;
                     } else{
                         estado = 27;
                         lexema += c;
                     }
-                    break;
-                case 28:
-                    if ( c == '*'){
+                        break;
+                    case 28:
+                       if ( c == '*'){
                         estado = 28;
                         lexema += c;
                     } else if ( c == '/') {
@@ -105,7 +103,7 @@ public class Scanner {
                         System.out.println("Error");
                     }
                     break;
-                 case 30:
+                     case 30:
                    if (c == '\n'){
                        estado = 0;
                        lexema = "";
@@ -115,7 +113,10 @@ public class Scanner {
                    }
                      break;
             }
-        }
+        } 
+                if (estado == 24) {
+                System.out.println("Error: Cadena de texto no cerrada correctamente");
+    }
 
         return tokens;
     }
