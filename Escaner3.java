@@ -42,6 +42,15 @@ public class Scanner {
             c = source.charAt(i);
 
             switch (estado) {
+                case 0:
+                    if (c == '"') {
+                        estado = 24;
+                        lexema += c;
+                    } else if (c== '/'){
+                        estado= 26;
+                        lexema += c;
+                    }
+                    break;
                 case 24: // Estado para construir una cadena de texto               
                  if (Character.isJavaIdentifierPart(c)) {
                     estado = 24;
@@ -51,7 +60,7 @@ public class Scanner {
                     Token t = new Token(TipoToken.STRING, lexema, lexema.replace('"', ' ').trim());
                     tokens.add(t);
                     estado = 0;
-                    lexema = " ";
+                    lexema = "";
                  } else {
                    System.out.println("Error");
                  }
@@ -111,4 +120,3 @@ public class Scanner {
         return tokens;
     }
 }
-
