@@ -44,35 +44,62 @@ public class Scanner {
                 case 0:
                     // Tokens de un solo caracter (Diagrama del alumno) DIAGRAMA 6
                     else if (c == '+') {
-                        Token t = new Token(TipoToken.PLUS, lexema);
+                        Token t = new Token(TipoToken.PLUS, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == '-') {
-                        Token t = new Token(TipoToken.MINUS, lexema);
+                        Token t = new Token(TipoToken.MINUS, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == '.') {
-                        Token t = new Token(TipoToken.DOT, lexema);
+                        Token t = new Token(TipoToken.DOT, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == ',') {
-                        Token t = new Token(TipoToken.COMMA, lexema);
+                        Token t = new Token(TipoToken.COMMA, String.valueOf(c));
                         tokens.add(t);
-                    } else if (c == '(') {
-                        Token t = new Token(TipoToken.RIGHT_PAREN, lexema);
-                        tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == ')') {
-                        Token t = new Token(TipoToken.LEFT_PAREN, lexema);
+                        Token t = new Token(TipoToken.RIGHT_PAREN, String.valueOf(c));
                         tokens.add(t);
-                    } else if (c == '{') {
-                        Token t = new Token(TipoToken.RIGHT_BRACE, lexema);
+                        lexema = "";
+                        
+                    } else if (c == '(') {
+                        Token t = new Token(TipoToken.LEFT_PAREN, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == '}') {
-                        Token t = new Token(TipoToken.LEFT_BRACE, lexema);
+                        Token t = new Token(TipoToken.RIGHT_BRACE, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
+                    } else if (c == '{') {
+                        Token t = new Token(TipoToken.LEFT_BRACE, String.valueOf(c));
+                        tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == '*') {
-                        Token t = new Token(TipoToken.STAR, lexema);
+                        Token t = new Token(TipoToken.STAR, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
                     } else if (c == ';') {
-                        Token t = new Token(TipoToken.SEMICOLON, lexema);
+                        Token t = new Token(TipoToken.SEMICOLON, String.valueOf(c));
                         tokens.add(t);
+                        lexema = "";
+                        
+                    } else if (c == '['){
+                        System.out.println("Error: caracter '[' no valido");
+                        System.exit(1);
+                        
+                    } else if (c == ']'){
+                        System.out.println("Error: caracter ']' no valido");
+                        System.exit(1);
                     }
                     break;
 
