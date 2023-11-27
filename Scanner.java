@@ -1,4 +1,4 @@
-//Dominguez Paez Alejandro Yael
+package asa;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,246 +6,66 @@ import java.util.List;
 import java.util.Map;
 
 public class Scanner {
-
-    private static final Map<String, TipoToken> palabrasReservadas;
-
-    static {
-        palabrasReservadas = new HashMap<>();
-        palabrasReservadas.put("and",    TipoToken.AND);
-        palabrasReservadas.put("else",   TipoToken.ELSE);
-        palabrasReservadas.put("false",  TipoToken.FALSE);
-        palabrasReservadas.put("for",    TipoToken.FOR);
-        palabrasReservadas.put("fun",    TipoToken.FUN);
-        palabrasReservadas.put("if",     TipoToken.IF);
-        palabrasReservadas.put("null",   TipoToken.NULL);
-        palabrasReservadas.put("or",     TipoToken.OR);
-        palabrasReservadas.put("print",  TipoToken.PRINT);
-        palabrasReservadas.put("return", TipoToken.RETURN);
-        palabrasReservadas.put("true",   TipoToken.TRUE);
-        palabrasReservadas.put("var",    TipoToken.VAR);
-        palabrasReservadas.put("while",  TipoToken.WHILE);
-    }
-
     private final String source;
 
     private final List<Token> tokens = new ArrayList<>();
-    
-    public Scanner(String source){
+
+    private static final Map<String, TipoToken> palabrasReservadas;
+    static {
+        palabrasReservadas = new HashMap<>();
+        palabrasReservadas.put("select", TipoToken.SELECT);
+        palabrasReservadas.put("from", TipoToken.FROM);
+        palabrasReservadas.put("distinct", TipoToken.DISTINCT);
+    }
+
+    Scanner(String source) {
         this.source = source + " ";
     }
 
-    public List<Token> scan() throws Exception {
+    List<Token> scanTokens() {
         int estado = 0;
+        char caracter = 0;
         String lexema = "";
-        char c;
+        int inicioLexema = 0;
 
-        for(int i=0; i<source.length(); i++){
-            c = source.charAt(i);
+        for (int i = 0; i < source.length(); i++) {
+            caracter = source.charAt(i);
 
-            switch (estado){
+            switch (estado) {
                 case 0:
-                    if(c == '>'){
+                    if (caracter == '*') {
+                        tokens.add(new Token(TipoToken.ASTERISCO, "*", i + 1));
+                    } else if (caracter == ',') {
+                        tokens.add(new Token(TipoToken.COMA, ",", i + 1));
+                    } else if (caracter == '.') {
+                        tokens.add(new Token(TipoToken.PUNTO, ".", i + 1));
+                    } else if (Character.isAlphabetic(caracter)) {
                         estado = 1;
-                        lexema += c;
-                        
-                    }else if(c == '<'){
-                        estado = 4;
-                        lexema += c;
-                        
-                    }else if(c == '='){
-                        estado = 7;
-                        lexema += c;
-                    
-                    }else if(c == '!'){
-                        estado = 10;
-                        lexema += c;
-                   
-                    }else if(Character.isLetter(c)){
-                        estado = 13;
-                        lexema += c;
-                        
-                    }else if(c == '"'){
-                        estado = 24;
-                        lexema += c;
-                    
-                    }else if(c == '/'){
-                        estado = 26;
-                        lexema += c;
-                        
-                    }else if(Character.isDigit(c)){
-                        estado = 15;
-                        lexema += c;
-
-                        /*while(Character.isDigit(c)){
-                            lexema += c;
-                            i++;
-                            c = source.charAt(i);
-                        }
-                        Token t = new Token(TipoToken.NUMBER, lexema, Integer.valueOf(lexema));
-                        lexema = "";
-                        estado = 0;
-                        tokens.add(t);
-                        */
-
-                    }
-                    
-                    break;
-
-                case 1: //Diagrama 1
-                    if(c == '='){
-                        //estado = 2;
-                        Token t = new Token(TipoToken.GREATER_EQUAL, lexema);
-                        tokens.add(t);
-                        
-                        estado = 0;
-                        lexema = "";
-                    }else{
-                        Token t = new Token(TipoToken.GREATER,lexema);
-                        tokens.add(t);
-                        estado = 0;
-                        lexema = "";
-                        i--;
+                        lexema = lexema + caracter;
+                        inicioLexema = i;
                     }
                     break;
-                
-                case 4: //Diagrama 1
-                    if(c == '='){
-                        Token t = new Token(TipoToken.LESS_EQUAL, lexema);
-                        tokens.add(t);
 
-                        estado = 0;
-                        lexema = "";
-                    }else{
-                        Token t = new Token(TipoToken.LESS, lexema);
-                        tokens.add(t);
-
-                        estado = 0;
-                        lexema = "";
-                        i--;
-                    }
-                    break;
-                
-                case 7: //Diagrama 1
-                    if(c == '='){
-                        Token t = new Token(TipoToken.EQUAL_EQUAL,lexema);
-                        tokens.add(t);
-
-                        estado = 0;
-                        lexema = "";
-                    }else{
-                        Token t = new Token(TipoToken.EQUAL, lexema);
-                        tokens.add(t);
-
-                        estado = 0;
-                        lexema = "";
-                        i--;
-                    }
-                    break;
-                
-                case 10: //Diagrama 1
-                    if(c == '='){
-                        Token t = new Token(TipoToken.BANG_EQUAL, lexema);
-                        tokens.add(t);
-
-                        estado = 0;
-                        lexema = "";
-                    }else{
-                        Token t = new Token(TipoToken.BANG, lexema);
-                        tokens.add(t);
-
-                        estado = 0;
-                        lexema = "";
-                        i--;
-                    }
-                    break;
-                    
-                case 13: //Diagrama 2
-                    if(Character.isLetterOrDigit(c)){
-                        estado = 13;
-                        lexema += c;
-                    }
-                    else{
+                case 1:
+                    if (Character.isAlphabetic(caracter) || Character.isDigit(caracter)) {
+                        lexema = lexema + caracter;
+                    } else {
                         TipoToken tt = palabrasReservadas.get(lexema);
-
-                        if(tt == null){
-                            Token t = new Token( TipoToken.IDENTIFIER, lexema);
-                            tokens.add(t);
+                        if (tt == null) {
+                            tokens.add(new Token(TipoToken.IDENTIFICADOR, lexema, inicioLexema + 1));
+                        } else {
+                            tokens.add(new Token(tt, lexema, inicioLexema + 1));
                         }
-                        else{
-                            Token t = new Token(tt, lexema);
-                            tokens.add(t);
-                        }
-
                         estado = 0;
-                        lexema = "";
                         i--;
-
-                    }
-                    break;
-
-                case 15: //Diagrama 3
-                    if(Character.isDigit(c)){
-                        estado = 15;
-                        lexema += c;
-                    }else if(c == '.'){
-                        estado = 16;
-                        lexema += c;
-                        
-                    }else if(c == 'E'){
-                        estado  = 18;
-                        lexema += c;
-                        
-                    }else{
-                        Token t = new Token(TipoToken.NUMBER, lexema, Integer.valueOf(lexema));
-                        tokens.add(t);
-
-                        estado = 0;
                         lexema = "";
-                        i--;
+                        inicioLexema = 0;
                     }
                     break;
-                    
-                case 16: //Diagrama 3
-                    if(Character.isDigit(c)){
-                        estado = 17;
-                        lexema += c; 
-                    }
-                    break;
-                
-                case 17: //Diagrama 3
-                    if(Character.isDigit(c)){
-                        estado = 17;
-                        lexema += c;
-                        
-                    }else if(c == 'E'){
-                        estado = 18;
-                        lexema += c;
-
-                    }else{
-                        Token t = new Token(TipoToken.NUMBER, lexema,Double.valueOf(lexema));
-                        tokens.add(t);
-                        
-                        estado = 0;
-                        lexema = "";
-                        i--; 
-                    }
-                    break;
-                
-                case 18: //Diagrama 3
-                    if(c == '+' || c == '-'){
-                        estado = 19;
-                        lexema += c;
-                    }else if(Character.isDigit(c)){
-                        estado = 20;
-                        lexema += c;
-                    }
-                    break;
-
             }
-
         }
-
+        tokens.add(new Token(TipoToken.EOF, "", source.length()));
         return tokens;
     }
-}
 
+}
